@@ -52,6 +52,9 @@ export const metadata: Metadata = {
     title: siteTitle,
     description: siteDescription,
   },
+  verification: {
+    google: "Zd91gRFeD7AWHKqYn8HMB8T5DlEapOndYup3OebZYZA",
+  },
   other: {
     "twitter:url": siteUrl,
   },
