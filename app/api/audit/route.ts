@@ -32,6 +32,42 @@ type Checks = {
   hasBlogPage: boolean;
   hasDocsPage: boolean;
   hasComparisonPage: boolean;
+  hasUseCasePage: boolean;
+  hasClearCta: boolean;
+};
+
+type Priority = "High" | "Medium" | "Low";
+type Effort = "Low" | "Medium" | "High";
+type Impact = "SEO" | "GEO" | "Conversion" | "Reddit" | "Content";
+
+type Scores = {
+  overall: number;
+  seo: number;
+  geo: number;
+  reddit: number;
+  content: number;
+  conversion: number;
+};
+
+type RecommendedFix = {
+  title: string;
+  priority: Priority;
+  effort: Effort;
+  impact: Impact;
+  whyItMatters: string;
+};
+
+type SuggestedPage = {
+  title: string;
+  searchIntent: string;
+  whyItHelps: string;
+  slug: string;
+};
+
+type RedditSuggestion = {
+  step: string;
+  title: string;
+  detail: string;
 };
 
 const REQUEST_TIMEOUT_MS = 10_000;
@@ -339,7 +375,20 @@ function detectLinkedPages(links: string[]) {
     hasComparisonPage:
       /\b(alternative|alternatives|compare|comparison)\b/.test(joined) ||
       /\bvs\.?\b/.test(joined),
+    hasUseCasePage:
+      /\b(use cases?|solutions?|customers?|workflows?|templates?)\b/.test(
+        joined,
+      ),
   };
+}
+
+function hasClearCta(html: string, links: string[]) {
+  const visibleText = cleanText(html).toLowerCase();
+  const joinedLinks = links.join(" ");
+  const ctaPattern =
+    /\b(start free|start audit|get started|try free|try it free|book demo|request demo|contact sales|sign up|create account|subscribe|buy now|download|get access|run audit|launch|install)\b/;
+
+  return ctaPattern.test(visibleText) || ctaPattern.test(joinedLinks);
 }
 
 function addIf(condition: boolean, score: number) {
@@ -365,59 +414,83 @@ function seededScore(seed: string, min: number, spread: number) {
   return min + (total % spread);
 }
 
+function clampScore(score: number) {
+  return Math.max(0, Math.min(100, Math.round(score)));
+}
+
 function calculateScores(
   checks: Checks,
   title: string,
   description: string,
   h1: string,
   input: AuditInput,
-) {
-  const seo =
-    addIf(checks.hasTitle, 15) +
-    addIf(titleLengthIsReasonable(title), 10) +
-    addIf(checks.hasDescription, 15) +
-    addIf(descriptionLengthIsReasonable(description), 10) +
-    addIf(checks.hasH1, 15) +
+): Scores {
+  let seo =
+    addIf(checks.isReachable, 5) +
+    addIf(checks.hasTitle, 12) +
+    addIf(titleLengthIsReasonable(title), 8) +
+    addIf(checks.hasDescription, 12) +
+    addIf(descriptionLengthIsReasonable(description), 8) +
+    addIf(checks.hasH1, 10) +
+    addIf(h1IsClear(h1), 7) +
     addIf(checks.hasCanonical, 10) +
-    addIf(checks.hasRobotsTxt, 10) +
+    addIf(checks.hasRobotsTxt, 8) +
     addIf(checks.hasSitemapXml, 10) +
-    addIf(checks.hasStructuredData, 5);
+    addIf(checks.hasStructuredData, 10);
+
+  if (!checks.hasStructuredData) {
+    seo = Math.min(seo, 82);
+  }
+  if (!checks.hasCanonical) {
+    seo = Math.min(seo, 86);
+  }
+  if (!checks.hasSitemapXml) {
+    seo = Math.min(seo, 88);
+  }
 
   const geo =
-    addIf(checks.hasLlmsTxt, 25) +
-    addIf(checks.hasFaqPage, 15) +
-    addIf(checks.hasPricingPage, 10) +
-    addIf(checks.hasDocsPage, 15) +
-    addIf(checks.hasComparisonPage, 15) +
-    addIf(checks.hasStructuredData, 20);
+    addIf(checks.hasLlmsTxt, 24) +
+    addIf(checks.hasFaqPage, 16) +
+    addIf(checks.hasPricingPage, 12) +
+    addIf(checks.hasDocsPage, 14) +
+    addIf(checks.hasComparisonPage, 16) +
+    addIf(checks.hasStructuredData, 18);
 
   const content =
-    addIf(checks.hasFaqPage, 20) +
-    addIf(checks.hasBlogPage, 20) +
-    addIf(checks.hasPricingPage, 15) +
-    addIf(checks.hasComparisonPage, 25) +
-    addIf(checks.hasDocsPage, 20);
+    addIf(checks.hasBlogPage, 18) +
+    addIf(checks.hasFaqPage, 18) +
+    addIf(checks.hasPricingPage, 14) +
+    addIf(checks.hasDocsPage, 12) +
+    addIf(checks.hasComparisonPage, 20) +
+    addIf(checks.hasUseCasePage, 18);
 
   const conversion =
-    addIf(checks.hasTitle, 20) +
-    addIf(checks.hasDescription, 20) +
-    addIf(checks.hasPricingPage, 20) +
-    addIf(checks.hasFaqPage, 20) +
-    addIf(h1IsClear(h1), 20);
+    addIf(h1IsClear(h1), 22) +
+    addIf(checks.hasDescription && descriptionLengthIsReasonable(description), 18) +
+    addIf(checks.hasPricingPage, 18) +
+    addIf(checks.hasFaqPage, 14) +
+    addIf(checks.hasClearCta, 18) +
+    addIf(checks.hasTitle && titleLengthIsReasonable(title), 10);
 
   const reddit = seededScore(
     `${input.websiteType}-${input.targetAudience}`,
-    input.targetAudience ? 55 : 45,
-    input.targetAudience ? 31 : 21,
+    input.targetAudience ? 44 : 36,
+    input.targetAudience ? 32 : 24,
   );
+  const overall =
+    seo * 0.28 +
+    geo * 0.22 +
+    content * 0.2 +
+    conversion * 0.2 +
+    reddit * 0.1;
 
   return {
-    overall: Math.round((seo + geo + reddit + content + conversion) / 5),
-    seo,
-    geo,
-    reddit,
-    content,
-    conversion,
+    overall: clampScore(overall),
+    seo: clampScore(seo),
+    geo: clampScore(geo),
+    reddit: clampScore(reddit),
+    content: clampScore(content),
+    conversion: clampScore(conversion),
   };
 }
 
@@ -482,89 +555,372 @@ function buildIssues(
       "An alternatives or comparison page was not discoverable from homepage links.",
     );
   }
+  if (!checks.hasUseCasePage) {
+    issues.push("A use cases, solutions, or templates page was not discoverable from homepage links.");
+  }
+  if (!checks.hasClearCta) {
+    issues.push("A clear homepage CTA was not detected.");
+  }
 
   return issues;
 }
 
-function buildRecommendedFixes(checks: Checks, title: string, description: string) {
-  const fixes: string[] = [];
+function buildRecommendedFixes(
+  checks: Checks,
+  title: string,
+  description: string,
+) {
+  const fixes: RecommendedFix[] = [];
+  const addFix = (fix: RecommendedFix) => fixes.push(fix);
 
   if (!checks.hasTitle) {
-    fixes.push("Add a clear homepage title tag that names the product category and target buyer.");
+    addFix({
+      title: "Add a clear homepage title tag",
+      priority: "High",
+      effort: "Low",
+      impact: "SEO",
+      whyItMatters:
+        "Search engines and browser previews rely on the title to understand the page topic and buyer intent.",
+    });
   } else if (!titleLengthIsReasonable(title)) {
-    fixes.push("Rewrite the title tag to fit roughly 30-65 characters while keeping the main search intent.");
+    addFix({
+      title: "Rewrite the title to 30-65 characters",
+      priority: "Medium",
+      effort: "Low",
+      impact: "SEO",
+      whyItMatters:
+        "A concise title is easier to scan in search results and helps keep the main keyword visible.",
+    });
   }
   if (!checks.hasDescription) {
-    fixes.push("Add a concise meta description that explains who the site helps and what outcome it delivers.");
+    addFix({
+      title: "Add a buyer-focused meta description",
+      priority: "High",
+      effort: "Low",
+      impact: "SEO",
+      whyItMatters:
+        "A description gives searchers and AI summaries a clearer reason to understand and click your result.",
+    });
   } else if (!descriptionLengthIsReasonable(description)) {
-    fixes.push("Rewrite the meta description to fit roughly 70-160 characters and include a clear value proposition.");
+    addFix({
+      title: "Rewrite the meta description to 70-160 characters",
+      priority: "Medium",
+      effort: "Low",
+      impact: "SEO",
+      whyItMatters:
+        "A focused description improves search snippets and forces clearer positioning for the homepage.",
+    });
   }
   if (!checks.hasH1) {
-    fixes.push("Add one clear H1 on the homepage that states the core customer problem and product category.");
+    addFix({
+      title: "Add one clear homepage H1",
+      priority: "High",
+      effort: "Low",
+      impact: "Conversion",
+      whyItMatters:
+        "Visitors need to understand the product category, audience, and outcome within the first few seconds.",
+    });
   }
   if (!checks.hasCanonical) {
-    fixes.push("Add a canonical tag to the homepage to reduce duplicate URL confusion.");
+    addFix({
+      title: "Add a canonical tag to the homepage",
+      priority: "Medium",
+      effort: "Low",
+      impact: "SEO",
+      whyItMatters:
+        "Canonical URLs reduce duplicate page confusion and consolidate ranking signals.",
+    });
   }
   if (!checks.hasRobotsTxt) {
-    fixes.push("Create a robots.txt file so crawlers can discover your preferred crawl rules.");
+    addFix({
+      title: "Publish robots.txt",
+      priority: "Medium",
+      effort: "Low",
+      impact: "SEO",
+      whyItMatters:
+        "robots.txt gives crawlers basic crawl guidance and can point them toward your sitemap.",
+    });
   }
   if (!checks.hasSitemapXml) {
-    fixes.push("Create sitemap.xml and submit it to Google Search Console.");
+    addFix({
+      title: "Create sitemap.xml and submit it to Google Search Console",
+      priority: "High",
+      effort: "Low",
+      impact: "SEO",
+      whyItMatters:
+        "A sitemap helps search engines discover priority pages, especially on small sites with few backlinks.",
+    });
   }
   if (!checks.hasLlmsTxt) {
-    fixes.push("Add llms.txt to summarize your product, important pages, and citation-friendly information for AI search.");
+    addFix({
+      title: "Add llms.txt",
+      priority: "High",
+      effort: "Low",
+      impact: "GEO",
+      whyItMatters:
+        "llms.txt gives AI search systems a concise map of your product, audience, and best source pages.",
+    });
   }
   if (!checks.hasStructuredData) {
-    fixes.push("Add JSON-LD structured data for the organization, software app, product, or FAQ content where relevant.");
+    addFix({
+      title: "Add JSON-LD structured data",
+      priority: "High",
+      effort: "Medium",
+      impact: "GEO",
+      whyItMatters:
+        "Structured data helps search and AI systems interpret your product, organization, FAQ, and offer details.",
+    });
   }
   if (!checks.hasPricingPage) {
-    fixes.push("Create a pricing page or pricing section so buyers can quickly understand cost and plan fit.");
+    addFix({
+      title: "Create a pricing page",
+      priority: "High",
+      effort: "Medium",
+      impact: "Conversion",
+      whyItMatters:
+        "Pricing pages reduce buyer uncertainty and capture high-intent visitors comparing tools.",
+    });
   }
   if (!checks.hasFaqPage) {
-    fixes.push("Create an FAQ page that answers setup, pricing, comparison, security, and buying questions.");
+    addFix({
+      title: "Create an FAQ page or homepage FAQ section",
+      priority: "High",
+      effort: "Medium",
+      impact: "Conversion",
+      whyItMatters:
+        "FAQ content answers objections, supports AI-search snippets, and gives buyers confidence before they click.",
+    });
   }
   if (!checks.hasBlogPage) {
-    fixes.push("Create a blog or resources page for problem-aware search content and product education.");
+    addFix({
+      title: "Create a blog or resources hub",
+      priority: "Medium",
+      effort: "Medium",
+      impact: "Content",
+      whyItMatters:
+        "A resources hub gives you a place to publish problem-aware content instead of relying only on the homepage.",
+    });
   }
   if (!checks.hasDocsPage) {
-    fixes.push("Create a docs or getting-started page if users need setup steps, integrations, API details, or workflows.");
+    addFix({
+      title: "Create docs or a getting-started page",
+      priority: "Medium",
+      effort: "Medium",
+      impact: "GEO",
+      whyItMatters:
+        "Documentation gives evaluators and AI search engines concrete setup, integration, and workflow details.",
+    });
   }
   if (!checks.hasComparisonPage) {
-    fixes.push("Create alternatives and comparison pages for buyers researching competing tools.");
+    addFix({
+      title: "Create alternatives and comparison pages",
+      priority: "High",
+      effort: "Medium",
+      impact: "Content",
+      whyItMatters:
+        "Comparison pages capture high-intent searches from buyers already evaluating options.",
+    });
+  }
+  if (!checks.hasUseCasePage) {
+    addFix({
+      title: "Create use-case pages for your top audience segments",
+      priority: "Medium",
+      effort: "Medium",
+      impact: "Content",
+      whyItMatters:
+        "Use-case pages connect your product to specific jobs, workflows, and buyer language.",
+    });
+  }
+  if (!checks.hasClearCta) {
+    addFix({
+      title: "Add one primary CTA above the fold",
+      priority: "High",
+      effort: "Low",
+      impact: "Conversion",
+      whyItMatters:
+        "A clear CTA tells interested visitors what to do next and makes low-traffic pages convert better.",
+    });
   }
 
   if (fixes.length === 0) {
-    fixes.push("The homepage covers the core technical checks. Next, improve depth, proof, and distribution consistency.");
+    addFix({
+      title: "Expand proof, distribution, and bottom-of-funnel depth",
+      priority: "Medium",
+      effort: "Medium",
+      impact: "Content",
+      whyItMatters:
+        "The core checks look healthy, so the next gains should come from better proof, deeper pages, and consistent distribution.",
+    });
   }
 
   return fixes;
 }
 
-function buildSevenDayPlan(checks: Checks) {
+function buildTopBlockers(checks: Checks, scores: Scores) {
+  const blockers: { text: string; weight: number }[] = [];
+
+  if (!checks.isReachable) {
+    blockers.push({
+      text: "The homepage is not returning a successful public HTTP response.",
+      weight: 100,
+    });
+  }
+  if (scores.geo < 55) {
+    blockers.push({
+      text: "AI-search readiness is weak because important GEO signals are missing.",
+      weight: 92,
+    });
+  }
+  if (!checks.hasLlmsTxt || !checks.hasStructuredData) {
+    blockers.push({
+      text: "The site is missing llms.txt or structured data, so AI systems get less context.",
+      weight: 90,
+    });
+  }
+  if (!checks.hasPricingPage || !checks.hasFaqPage) {
+    blockers.push({
+      text: "Buyers cannot easily find pricing or FAQ answers from the homepage.",
+      weight: 86,
+    });
+  }
+  if (!checks.hasComparisonPage) {
+    blockers.push({
+      text: "There is no visible comparison or alternatives page for high-intent buyers.",
+      weight: 82,
+    });
+  }
+  if (!checks.hasBlogPage || !checks.hasUseCasePage || !checks.hasDocsPage) {
+    blockers.push({
+      text: "The content architecture is thin for search, use cases, and buyer education.",
+      weight: 76,
+    });
+  }
+  if (!checks.hasClearCta) {
+    blockers.push({
+      text: "The homepage does not show a clear action for interested visitors.",
+      weight: 74,
+    });
+  }
+  if (!checks.hasSitemapXml || !checks.hasRobotsTxt || !checks.hasCanonical) {
+    blockers.push({
+      text: "Search discovery basics need cleanup across sitemap, robots, or canonical tags.",
+      weight: 70,
+    });
+  }
+
+  const unique = new Map<string, number>();
+  for (const blocker of blockers) {
+    unique.set(blocker.text, Math.max(unique.get(blocker.text) ?? 0, blocker.weight));
+  }
+
+  if (unique.size === 0) {
+    return [
+      "No critical public-signal blocker was detected by this lightweight scan.",
+      "The next likely blocker is page depth: proof, examples, use cases, and comparison detail.",
+      "Growth will still depend on consistent manual distribution and learning from real buyer conversations.",
+    ];
+  }
+
+  return [...unique.entries()]
+    .map(([text, weight]) => ({ text, weight }))
+    .sort((a, b) => b.weight - a.weight)
+    .slice(0, 3)
+    .map((item) => item.text);
+}
+
+function buildFastestNextStep(checks: Checks) {
+  if (!checks.hasSitemapXml || !checks.hasRobotsTxt) {
+    return "Create sitemap.xml and robots.txt, then submit the sitemap in Google Search Console.";
+  }
+  if (!checks.hasH1 || !checks.hasTitle || !checks.hasDescription) {
+    return "Rewrite the homepage H1, title, and meta description around one clear audience and outcome.";
+  }
+  if (!checks.hasFaqPage) {
+    return "Add a FAQ section with 5 buyer questions about pricing, setup, alternatives, and fit.";
+  }
+  if (!checks.hasPricingPage) {
+    return "Add a pricing page or pricing section linked from the homepage.";
+  }
+  if (!checks.hasLlmsTxt || !checks.hasStructuredData) {
+    return "Add llms.txt and JSON-LD structured data for the product, organization, and key pages.";
+  }
+  if (!checks.hasComparisonPage) {
+    return "Publish one honest alternatives or comparison page for your closest substitute.";
+  }
+
+  return "Choose one high-intent page idea, publish it this week, and manually share useful answers in relevant communities.";
+}
+
+function buildOneLineDiagnosis(checks: Checks, scores: Scores) {
+  const missing: string[] = [];
+
+  if (!checks.hasLlmsTxt) missing.push("llms.txt");
+  if (!checks.hasStructuredData) missing.push("structured data");
+  if (!checks.hasPricingPage) missing.push("pricing");
+  if (!checks.hasFaqPage) missing.push("FAQ");
+  if (!checks.hasDocsPage) missing.push("documentation");
+  if (!checks.hasComparisonPage) missing.push("comparison content");
+
+  if (scores.seo >= 70 && missing.length > 0) {
+    return `Your site has solid technical SEO basics, but it is missing AI-search and conversion assets such as ${missing.slice(0, 4).join(", ")}.`;
+  }
+
+  if (scores.overall < 45) {
+    return "Your site is reachable, but the growth foundation is thin across search discovery, AI-search readiness, content depth, and conversion clarity.";
+  }
+
+  if (scores.conversion < 55) {
+    return "Your site has some discoverability signals, but buyers need clearer proof, pricing, FAQ answers, and a stronger next step.";
+  }
+
+  if (scores.geo < 55) {
+    return "Your traditional SEO foundation is ahead of your AI-search readiness, so GEO pages and structured context should be the next focus.";
+  }
+
+  return "Your site has a workable foundation; the next growth gains should come from deeper buyer pages, clearer proof, and consistent manual distribution.";
+}
+
+function buildSummary(checks: Checks, scores: Scores) {
+  return {
+    diagnosis: buildOneLineDiagnosis(checks, scores),
+    topBlockers: buildTopBlockers(checks, scores),
+    fastestNextStep: buildFastestNextStep(checks),
+  };
+}
+
+function buildSevenDayPlan(checks: Checks, input: AuditInput) {
+  const audience = input.targetAudience || "your target audience";
   const tasks = [
-    !checks.hasTitle || !checks.hasDescription
-      ? "Rewrite the homepage title and meta description around the main buyer, use case, and outcome."
-      : "Review the homepage title and meta description against the highest-intent keyword you want to win.",
-    !checks.hasH1
-      ? "Add one clear H1 and align the first screen around a single product promise."
-      : "Tighten the H1 and first-screen CTA so visitors understand the product in five seconds.",
     !checks.hasSitemapXml || !checks.hasRobotsTxt
-      ? "Publish robots.txt and sitemap.xml, then submit the sitemap in Google Search Console."
-      : "Review indexation in Google Search Console and make sure priority pages are linked from the homepage.",
+      ? "Create sitemap.xml, reference it from robots.txt, submit it in Google Search Console, and request indexing for your homepage plus top 5 pages."
+      : "Submit or re-submit your sitemap in Google Search Console and request indexing for your homepage plus top 5 pages.",
+    !checks.hasTitle || !checks.hasDescription || !checks.hasH1
+      ? `Rewrite your homepage H1, title, and meta description around one clear audience: ${audience}.`
+      : `Audit your homepage first screen and make the H1, title, and meta description speak to ${audience} with one measurable outcome.`,
+    !checks.hasFaqPage
+      ? "Create a FAQ section with 5 buyer questions about pricing, setup, results, alternatives, and who the product is for."
+      : "Improve the FAQ with 5 sharper buyer questions pulled from sales calls, support messages, or Reddit discussions.",
     !checks.hasLlmsTxt || !checks.hasStructuredData
-      ? "Add llms.txt and JSON-LD structured data to make the site easier for AI search systems to understand."
-      : "Improve answer-ready sections with concise definitions, examples, and source-friendly summaries.",
-    !checks.hasPricingPage || !checks.hasFaqPage
-      ? "Create or improve pricing and FAQ pages to answer common buying objections."
-      : "Add stronger proof, objections, and plan-fit details to the pricing and FAQ experience.",
-    !checks.hasComparisonPage || !checks.hasBlogPage
-      ? "Draft one comparison or alternatives page and one problem-focused blog article."
-      : "Expand existing content with one use-case page and one competitor comparison page.",
-    "Manually research Reddit conversations, answer two relevant threads helpfully, and avoid spam, automation, or fake accounts.",
+      ? "Add llms.txt with product, audience, core pages, and use cases, then add JSON-LD for SoftwareApplication, Organization, or FAQ content."
+      : "Expand llms.txt and structured data with your newest pricing, docs, FAQ, and comparison pages.",
+    !checks.hasComparisonPage
+      ? "Create one comparison or alternatives page targeting the most obvious competitor or substitute."
+      : "Refresh one comparison page with clearer feature tradeoffs, screenshots, pricing notes, and a direct CTA.",
+    `Find 10 Reddit threads where ${audience} ask related questions, then save the exact words they use to describe the problem.`,
+    "Answer 3 Reddit threads manually with helpful advice. Do not spam, use fake accounts, manipulate votes, or automate posting; be transparent if you mention your product.",
   ];
 
   return tasks.map((task, index) => ({
     day: `Day ${index + 1}`,
+    title: [
+      "Index the site",
+      "Sharpen the homepage",
+      "Answer buyer objections",
+      "Prepare for AI search",
+      "Capture comparison intent",
+      "Research Reddit demand",
+      "Participate manually",
+    ][index],
     task,
   }));
 }
@@ -578,6 +934,15 @@ function productNameFromUrl(url: string) {
     .filter(Boolean)
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
+}
+
+function slugify(value: string) {
+  return `/${value
+    .toLowerCase()
+    .replace(/https?:\/\//g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80)}`;
 }
 
 function buildSuggestedPages(input: AuditInput) {
@@ -597,20 +962,62 @@ function buildSuggestedPages(input: AuditInput) {
     .filter(Boolean)
     .slice(0, 2);
 
-  const pages = [
-    `Best ${productCategory} for ${audience}`,
-    `${productName} alternatives`,
+  const pages: SuggestedPage[] = [
+    {
+      title: `Best ${productCategory} for ${audience}`,
+      searchIntent:
+        "Problem-aware buyers looking for a shortlist before choosing a tool.",
+      whyItHelps:
+        "This captures early comparison traffic and lets you define the buying criteria in your category.",
+      slug: slugify(`best ${productCategory} for ${audience}`),
+    },
+    {
+      title: `${productName} alternatives`,
+      searchIntent:
+        "Buyers comparing your product with substitutes and adjacent options.",
+      whyItHelps:
+        "Alternatives pages catch high-intent searches and explain when your product is the right fit.",
+      slug: slugify(`${productName} alternatives`),
+    },
   ];
 
   for (const competitor of competitors) {
-    pages.push(`${productName} vs ${competitor}`);
+    pages.push({
+      title: `${productName} vs ${competitor}`,
+      searchIntent:
+        "Evaluation-stage buyers comparing two specific products.",
+      whyItHelps:
+        "A transparent comparison page can win trust from visitors who are already close to choosing.",
+      slug: slugify(`${productName} vs ${competitor}`),
+    });
   }
 
   return [
     ...pages,
-    "FAQ page",
-    "Pricing page",
-    `Use cases page for ${audience}`,
+    {
+      title: "FAQ page",
+      searchIntent:
+        "Buyers looking for setup, pricing, security, integration, and fit answers.",
+      whyItHelps:
+        "FAQ content reduces conversion friction and gives AI search systems concise answer blocks.",
+      slug: "/faq",
+    },
+    {
+      title: "Pricing page",
+      searchIntent:
+        "High-intent visitors checking cost, plan fit, limits, and upgrade paths.",
+      whyItHelps:
+        "Pricing clarity builds trust and prevents qualified visitors from leaving to compare elsewhere.",
+      slug: "/pricing",
+    },
+    {
+      title: `Use cases page for ${audience}`,
+      searchIntent:
+        "Visitors trying to understand whether the product works for their exact workflow.",
+      whyItHelps:
+        "Use-case pages turn generic positioning into concrete jobs, examples, and outcomes.",
+      slug: slugify(`use cases for ${audience}`),
+    },
   ];
 }
 
@@ -618,13 +1025,39 @@ function buildRedditSuggestions(input: AuditInput) {
   const audience = input.targetAudience || "your target audience";
   const websiteType = input.websiteType || "your product category";
 
-  return [
-    `Manually search Reddit for ${audience} discussing the problem your ${websiteType} solves before you mention your product.`,
-    "Do not spam, automate posting, use fake accounts, or mass-post the same message across communities.",
-    "Be transparent when you are connected to the product, answer the question first, and share the link only when it is genuinely useful.",
-    "Turn repeated Reddit objections into FAQ, comparison, pricing, and use-case content on your website.",
-    "Track useful phrases from real discussions and use them to improve homepage copy and article briefs.",
+  const suggestions: RedditSuggestion[] = [
+    {
+      step: "1",
+      title: "Find real demand manually",
+      detail: `Search Reddit for ${audience} discussing the problem your ${websiteType} solves. Save 10 threads before you mention your product anywhere.`,
+    },
+    {
+      step: "2",
+      title: "Follow the safety rules",
+      detail:
+        "No spam, no fake accounts, no vote manipulation, no automated posting, and no repeated copy-paste promotion across communities.",
+    },
+    {
+      step: "3",
+      title: "Answer questions before linking",
+      detail:
+        "Write a helpful manual answer first. Only share your product when it directly helps the thread, and be transparent that you are connected to it.",
+    },
+    {
+      step: "4",
+      title: "Use Reddit language on the website",
+      detail:
+        "Turn repeated objections and phrases into FAQ, comparison, pricing, and use-case copy.",
+    },
+    {
+      step: "5",
+      title: "Track learning, not vanity",
+      detail:
+        "Measure useful replies, objections, and page ideas. Treat Reddit as customer research and trust-building, not a traffic shortcut.",
+    },
   ];
+
+  return suggestions;
 }
 
 export async function POST(request: Request) {
@@ -691,6 +1124,7 @@ export async function POST(request: Request) {
     hasSitemapXml,
     hasLlmsTxt,
     hasStructuredData: hasStructuredData(html),
+    hasClearCta: hasClearCta(html, links),
     ...linkedPages,
   };
   const scores = calculateScores(checks, title, description, h1, input);
@@ -707,9 +1141,10 @@ export async function POST(request: Request) {
     },
     checks,
     scores,
+    summary: buildSummary(checks, scores),
     issues,
     recommendedFixes: buildRecommendedFixes(checks, title, description),
-    sevenDayPlan: buildSevenDayPlan(checks),
+    sevenDayPlan: buildSevenDayPlan(checks, input),
     suggestedPages: buildSuggestedPages(input),
     redditSuggestions: buildRedditSuggestions(input),
   });
