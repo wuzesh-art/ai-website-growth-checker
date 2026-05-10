@@ -103,6 +103,9 @@ type CheckGroup = {
   items: CheckItem[];
 };
 
+const waitlistHref =
+  "mailto:hello@example.com?subject=AI Website Growth Checker Waitlist";
+
 const scoreRows: {
   key: ScoreKey;
   label: string;
@@ -833,6 +836,33 @@ function RedditSuggestions({
   );
 }
 
+function ReportWaitlistCta() {
+  return (
+    <section className="pb-8 sm:pb-12">
+      <Container>
+        <div className="rounded-lg border border-slate-200 bg-slate-950 p-5 text-white shadow-sm sm:p-8">
+          <p className="text-sm font-semibold uppercase text-emerald-300">
+            Weekly monitoring
+          </p>
+          <h2 className="mt-3 text-2xl font-semibold">
+            Want to monitor this site every week?
+          </h2>
+          <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-300">
+            We are building weekly growth monitoring for AI-built websites.
+            Join the waitlist if you want early access.
+          </p>
+          <a
+            href={waitlistHref}
+            className="mt-6 inline-flex min-h-12 items-center justify-center rounded-md bg-white px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-emerald-100"
+          >
+            Join the waitlist
+          </a>
+        </div>
+      </Container>
+    </section>
+  );
+}
+
 export default function ReportClient({
   input,
 }: Readonly<{
@@ -970,6 +1000,8 @@ export default function ReportClient({
           </section>
         </>
       ) : null}
+
+      {input.url ? <ReportWaitlistCta /> : null}
     </>
   );
 }

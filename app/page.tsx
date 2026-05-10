@@ -14,6 +14,9 @@ const proofPoints = [
   "Built for small sites",
 ];
 
+const waitlistHref =
+  "mailto:hello@example.com?subject=AI Website Growth Checker Waitlist";
+
 const channelRows = [
   { label: "Search pages", value: "12 gaps", color: "bg-emerald-500" },
   { label: "AI answers", value: "7 fixes", color: "bg-sky-500" },
@@ -161,6 +164,31 @@ export default function Home() {
                 {audience}
               </div>
             ))}
+          </div>
+        </Container>
+      </section>
+
+      <section className="bg-slate-50 py-14 sm:py-20">
+        <Container>
+          <div className="grid gap-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div>
+              <p className="text-sm font-semibold uppercase text-emerald-700">
+                Coming soon
+              </p>
+              <h2 className="mt-3 text-3xl font-semibold text-slate-950 sm:text-4xl">
+                Want weekly growth monitoring?
+              </h2>
+              <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
+                Join the waitlist to get notified when weekly SEO, GEO, Reddit,
+                and content gap monitoring is available.
+              </p>
+            </div>
+            <a
+              href={waitlistHref}
+              className="inline-flex min-h-12 items-center justify-center rounded-md bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
+            >
+              Join the waitlist
+            </a>
           </div>
         </Container>
       </section>

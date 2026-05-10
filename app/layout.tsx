@@ -3,6 +3,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 
+const siteUrl = "https://ai-website-growth-checker.vercel.app";
+const siteTitle = "AI Website Growth Checker";
+const siteDescription =
+  "Free growth audit tool for AI-built websites, micro SaaS, indie tools, and small online businesses. Check SEO, GEO, Reddit opportunities, content gaps, and conversion basics.";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -14,12 +19,38 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "AI Website Growth Checker",
-    template: "%s | AI Website Growth Checker",
+    default: siteTitle,
+    template: `%s | ${siteTitle}`,
   },
-  description:
-    "A free growth audit tool for AI-built websites, micro SaaS, indie tools, and small online businesses.",
+  description: siteDescription,
+  keywords: [
+    "AI website growth checker",
+    "AI-built website",
+    "SEO audit",
+    "GEO checker",
+    "Reddit marketing",
+    "micro SaaS growth",
+    "indie hacker tools",
+    "website traffic checker",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: siteTitle,
+    description: siteDescription,
+    url: siteUrl,
+    siteName: siteTitle,
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary",
+    title: siteTitle,
+    description: siteDescription,
+  },
 };
 
 const navItems = [
@@ -43,11 +74,17 @@ export default function RootLayout({
         <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
           <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between lg:px-8">
             <Link href="/" className="flex items-center gap-3">
-              <span className="flex size-9 items-center justify-center rounded-md border border-slate-200 bg-slate-950 text-sm font-semibold text-white">
-                AI
+              <span
+                aria-hidden="true"
+                className="grid size-9 grid-cols-2 gap-1 rounded-md border border-slate-200 bg-slate-950 p-2"
+              >
+                <span className="rounded-sm bg-emerald-300" />
+                <span className="rounded-sm bg-sky-300" />
+                <span className="rounded-sm bg-orange-300" />
+                <span className="rounded-sm bg-white" />
               </span>
               <span className="text-base font-semibold text-slate-950">
-                AI Website Growth Checker
+                {siteTitle}
               </span>
             </Link>
 
