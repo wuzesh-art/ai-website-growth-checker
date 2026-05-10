@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 
-const siteUrl = "https://ai-website-growth-checker.vercel.app";
+const siteUrl = "https://growth.gurubox.ai";
 const siteTitle = "AI Website Growth Checker";
 const siteDescription =
   "Free growth audit tool for AI-built websites, micro SaaS, indie tools, and small online businesses. Check SEO, GEO, Reddit opportunities, content gaps, and conversion basics.";
@@ -50,6 +50,9 @@ export const metadata: Metadata = {
     card: "summary",
     title: siteTitle,
     description: siteDescription,
+  },
+  other: {
+    "twitter:url": siteUrl,
   },
 };
 

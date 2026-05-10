@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const siteUrl = "https://ai-website-growth-checker.vercel.app";
+const siteUrl = "https://growth.gurubox.ai";
 
 const routes = [
   { path: "/", priority: 1 },
