@@ -13,7 +13,7 @@ const sections = [
   },
   {
     title: "How the information is used",
-    text: "The current version uses the submitted details only to populate a simulated report in your browser. It is designed to analyze public website information and basic business context, not private accounts or protected systems.",
+    text: "The current version uses the submitted details to run public website checks and generate a browser-visible report. It is designed to analyze public website information and basic business context, not private accounts or protected systems.",
   },
   {
     title: "No account or payment data",
@@ -25,7 +25,7 @@ const sections = [
   },
   {
     title: "Third-party services",
-    text: "The first version does not connect to an AI API, payment provider, email service, analytics database, or external website crawler.",
+    text: "The first version does not connect to an AI API, payment provider, email service, or analytics database. It uses server-side requests to access the public website URL and common public files such as robots.txt, sitemap.xml, and llms.txt.",
   },
   {
     title: "Contact",

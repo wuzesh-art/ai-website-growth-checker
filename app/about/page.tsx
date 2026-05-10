@@ -37,9 +37,9 @@ export default function AboutPage() {
               </p>
               <p>
                 The first version is intentionally lightweight. It focuses on
-                simulated guidance across SEO, GEO, Reddit, content gaps, and
-                conversion basics so the product can validate the workflow
-                before adding live crawling or AI analysis.
+                public website checks across SEO, GEO, Reddit, content gaps,
+                and conversion basics without adding login, payments, a
+                database, or AI analysis.
               </p>
             </div>
             <div className="mt-8">

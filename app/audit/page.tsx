@@ -21,7 +21,7 @@ export default function AuditPage() {
       <PageHeader
         eyebrow="Run the audit"
         title="Tell us what you are trying to grow"
-        description="Share the public basics. The first version does not require login, payment, a database, or an AI API."
+        description="Share the public basics. The audit checks your live homepage and a few public growth files without login, payment, a database, or an AI API."
       />
 
       <section className="py-12 sm:py-16">
@@ -38,9 +38,10 @@ export default function AuditPage() {
                 </span>
                 <input
                   required
-                  type="url"
+                  type="text"
+                  inputMode="url"
                   name="url"
-                  placeholder="https://yourwebsite.com"
+                  placeholder="yourwebsite.com or https://yourwebsite.com"
                   className="min-h-12 rounded-md border border-slate-300 bg-white px-4 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
                 />
               </label>
@@ -50,7 +51,7 @@ export default function AuditPage() {
                   Website type
                 </span>
                 <select
-                  name="type"
+                  name="websiteType"
                   defaultValue="AI Tool"
                   className="min-h-12 rounded-md border border-slate-300 bg-white px-4 text-slate-950 outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
                 >
@@ -68,7 +69,7 @@ export default function AuditPage() {
                 </span>
                 <textarea
                   required
-                  name="audience"
+                  name="targetAudience"
                   rows={4}
                   placeholder="Example: indie founders who need a lightweight AI support widget"
                   className="rounded-md border border-slate-300 bg-white px-4 py-3 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
@@ -121,8 +122,8 @@ export default function AuditPage() {
               ))}
             </div>
             <p className="mt-8 text-sm leading-6 text-slate-300">
-              This demo report uses simulated analysis only. It does not crawl
-              your site, store submitted data, or connect to external APIs.
+              The report checks public homepage HTML plus common public files.
+              It does not store submitted data or connect to paid AI APIs.
             </p>
           </aside>
         </Container>

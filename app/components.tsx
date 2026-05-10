@@ -160,7 +160,7 @@ export function EmptyStateLink() {
     <div className="rounded-lg border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-950">
       <p className="font-semibold">No URL was passed into this report.</p>
       <p className="mt-1">
-        Run the free audit form to generate a cleaner mock report with your
+        Run the free audit form to generate a live public-site report with your
         website details filled in.
       </p>
       <Link

@@ -9,15 +9,15 @@ export const metadata: Metadata = {
 const sections = [
   {
     title: "Use of the service",
-    text: "AI Website Growth Checker provides a free simulated growth audit for public websites and basic business context. You may use it to explore SEO, GEO, Reddit, content, and conversion ideas for your own website or a website you are authorized to review.",
+    text: "AI Website Growth Checker provides a free growth audit for public websites and basic business context. You may use it to explore SEO, GEO, Reddit, content, and conversion ideas for your own website or a website you are authorized to review.",
   },
   {
     title: "No sensitive submissions",
     text: "Do not submit passwords, private keys, customer records, unpublished financial information, confidential documents, or any other sensitive data. The tool is intended for public website information only.",
   },
   {
-    title: "Simulated reports",
-    text: "The current report is a mock audit and does not use a live crawler, database, AI API, or manual expert review. Scores and recommendations are for planning and educational purposes, not guaranteed business results.",
+    title: "Automated public checks",
+    text: "The current report uses automated public website checks and simple scoring rules. It does not use a database, AI API, or manual expert review. Scores and recommendations are for planning and educational purposes, not guaranteed business results.",
   },
   {
     title: "No professional advice",

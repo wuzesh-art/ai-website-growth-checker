@@ -16,7 +16,7 @@ const plans = [
     description:
       "A simple growth audit for AI-built websites, micro SaaS products, and indie tools.",
     features: [
-      "Mock growth report",
+      "Live public website checks",
       "SEO, GEO, Reddit, content, and conversion scores",
       "Recommended fixes",
       "7-day low-cost growth plan",

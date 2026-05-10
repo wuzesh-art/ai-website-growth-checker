@@ -175,9 +175,9 @@ export default function Home() {
               Get a low-cost growth plan before you rewrite your product.
             </h2>
             <p className="mt-4 max-w-2xl leading-7 text-slate-300">
-              Enter your website, describe the audience, and receive a mock
-              report with practical SEO, GEO, Reddit, content, and conversion
-              ideas.
+              Enter your website, describe the audience, and receive a live
+              public-site report with practical SEO, GEO, Reddit, content, and
+              conversion ideas.
             </p>
           </div>
           <Link
