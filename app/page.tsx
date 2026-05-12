@@ -15,7 +15,7 @@ const proofPoints = [
 ];
 
 const waitlistHref =
-  "mailto:hello@example.com?subject=AI Website Growth Checker Waitlist";
+  "mailto:support@gurubox.ai?subject=AI Website Growth Checker Waitlist";
 
 const channelRows = [
   { label: "Search pages", value: "12 gaps", color: "bg-emerald-500" },

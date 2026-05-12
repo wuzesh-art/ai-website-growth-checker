@@ -104,7 +104,7 @@ type CheckGroup = {
 };
 
 const waitlistHref =
-  "mailto:hello@example.com?subject=AI Website Growth Checker Waitlist";
+  "mailto:support@gurubox.ai?subject=AI Website Growth Checker Waitlist";
 
 const scoreRows: {
   key: ScoreKey;
