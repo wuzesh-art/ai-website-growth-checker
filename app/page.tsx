@@ -7,6 +7,7 @@ import {
   SectionHeading,
   SecondaryLink,
 } from "./components";
+import { growthToolLinks } from "./landing-page-data";
 
 const proofPoints = [
   "No login required",
@@ -163,6 +164,35 @@ export default function Home() {
               >
                 {audience}
               </div>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      <section className="bg-slate-50 py-14 sm:py-20">
+        <Container>
+          <SectionHeading
+            eyebrow="Growth tools"
+            title="Focused checks for early traffic problems"
+            description="Use these pages when you need a more specific starting point for diagnosing an AI-built website or small online business."
+          />
+          <div className="mt-8 grid gap-4 md:grid-cols-2">
+            {growthToolLinks.map((tool) => (
+              <Link
+                key={tool.href}
+                href={tool.href}
+                className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
+              >
+                <h2 className="text-xl font-semibold text-slate-950">
+                  {tool.title}
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-slate-600">
+                  {tool.description}
+                </p>
+                <span className="mt-5 inline-flex text-sm font-semibold text-emerald-700">
+                  Explore this tool
+                </span>
+              </Link>
             ))}
           </div>
         </Container>
