@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     "website traffic checker",
   ],
   alternates: {
-    canonical: "/",
+    canonical: `${siteUrl}/`,
   },
   openGraph: {
     title: siteTitle,

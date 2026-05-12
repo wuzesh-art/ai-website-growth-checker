@@ -230,7 +230,7 @@ export const landingPages = {
     slug: "/seo-checker-for-ai-built-websites",
     metaTitle: "SEO Checker for AI-Built Websites",
     metaDescription:
-      "Check whether your AI-built website has the SEO basics needed for search visibility, including title, description, H1, canonical, robots, sitemap, and structured data.",
+      "Check SEO basics for AI-built websites: title, description, H1, canonical, robots.txt, sitemap.xml, and structured data.",
     eyebrow: "SEO checker for AI-built websites",
     h1: "SEO Checker for AI-Built Websites",
     intro:
@@ -333,7 +333,7 @@ export const landingPages = {
     slug: "/geo-checker-for-ai-websites",
     metaTitle: "GEO Checker for AI Websites",
     metaDescription:
-      "Check whether your AI website is ready for AI search engines like ChatGPT, Perplexity, and Gemini with GEO signals, llms.txt, structured data, FAQ, docs, and comparison pages.",
+      "Check if your AI website is easy for ChatGPT, Perplexity, and Gemini to understand with llms.txt, structured data, FAQ, docs, and comparison pages.",
     eyebrow: "GEO checker for AI websites",
     h1: "GEO Checker for AI Websites",
     intro:
@@ -549,7 +549,7 @@ export const landingPages = {
     slug: "/content-gap-analysis-for-micro-saas",
     metaTitle: "Content Gap Analysis for Micro SaaS",
     metaDescription:
-      "Find missing SEO and GEO pages for your micro SaaS, including FAQ, comparison, alternatives, use case, pricing, problem-solution pages, and AI-search summaries.",
+      "Find missing SEO and GEO pages for your micro SaaS: FAQ, comparison, alternatives, use case, pricing, problem-solution pages, and AI-search summaries.",
     eyebrow: "Content gap analysis for micro SaaS",
     h1: "Content Gap Analysis for Micro SaaS",
     intro:
