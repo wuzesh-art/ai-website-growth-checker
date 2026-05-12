@@ -8,6 +8,8 @@ const routes = [
   { path: "/free-website-growth-audit", priority: 0.8 },
   { path: "/seo-checker-for-ai-built-websites", priority: 0.75 },
   { path: "/geo-checker-for-ai-websites", priority: 0.75 },
+  { path: "/reddit-marketing-checker-for-saas", priority: 0.75 },
+  { path: "/content-gap-analysis-for-micro-saas", priority: 0.75 },
   { path: "/audit", priority: 0.9 },
   { path: "/pricing", priority: 0.7 },
   { path: "/blog", priority: 0.7 },
