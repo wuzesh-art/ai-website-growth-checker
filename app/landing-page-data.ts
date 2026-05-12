@@ -226,6 +226,212 @@ export const landingPages = {
     finalCtaText:
       "Check your site for SEO basics, GEO readiness, content gaps, Reddit opportunities, and conversion blockers.",
   },
+  seoCheckerForAiBuiltWebsites: {
+    slug: "/seo-checker-for-ai-built-websites",
+    metaTitle: "SEO Checker for AI-Built Websites",
+    metaDescription:
+      "Check whether your AI-built website has the SEO basics needed for search visibility, including title, description, H1, canonical, robots, sitemap, and structured data.",
+    eyebrow: "SEO checker for AI-built websites",
+    h1: "SEO Checker for AI-Built Websites",
+    intro:
+      "Use this SEO checker to review whether a website built with AI coding tools has the basic search signals needed to be crawled, understood, and improved.",
+    searchIntent:
+      "You used AI to build a website, but you are not sure whether the SEO setup is good enough for Google and other search engines.",
+    checkIntro:
+      "This page focuses on the technical and on-page SEO checks that often get missed when founders move quickly from AI-generated code to a live website.",
+    checks: [
+      "Whether your homepage has a clear title tag, meta description, and H1 that explain the product and audience.",
+      "Whether search engines can find crawl signals such as robots.txt, sitemap.xml, and a canonical homepage URL.",
+      "Whether the page includes structured data that gives search systems more context about the product or business.",
+      "Whether SEO basics connect to buyer pages like pricing, FAQ, docs, and comparison content instead of stopping at the homepage.",
+    ],
+    audiences: [
+      "solo founders who launched a site with AI coding tools",
+      "non-technical founders unsure whether their website can rank",
+      "product managers reviewing a quick AI-built landing page",
+      "AI tool builders who need a practical SEO checklist before content work",
+    ],
+    whyTitle: "Why AI-built websites can look finished but still miss SEO basics",
+    whyParagraphs: [
+      "AI-generated sites often produce attractive layouts before they produce a search-ready information architecture. A homepage can look polished while still missing metadata, crawl files, canonical signals, and useful internal links.",
+      "For small SaaS and indie products, basic SEO is not only about ranking. It also forces clearer positioning: who the page is for, what problem it solves, and which buyer questions deserve dedicated pages.",
+      "A lightweight SEO checker helps you find fixable issues before you publish dozens of blog posts or spend time on channels that send visitors to an unclear site.",
+    ],
+    auditChecks: [
+      {
+        title: "Metadata quality",
+        text: "Checks title length, description presence, and whether the H1 gives visitors and search engines a clear topic.",
+      },
+      {
+        title: "Crawl discovery",
+        text: "Looks for robots.txt and sitemap.xml so search engines have a clean path to discover important pages.",
+      },
+      {
+        title: "Canonical and structure",
+        text: "Reviews whether the homepage has a canonical URL and structured data that reduce ambiguity.",
+      },
+      {
+        title: "SEO-to-growth gaps",
+        text: "Connects SEO checks with missing pricing, FAQ, blog, docs, and comparison pages that support organic demand.",
+      },
+    ],
+    steps: [
+      "Run the free audit with the live URL of your AI-built website.",
+      "Review the SEO score and the Technical SEO checks before changing copy.",
+      "Fix missing metadata, crawl files, canonical tags, and structured data first.",
+      "Use the suggested pages to decide which search-intent pages to build next.",
+    ],
+    faqs: [
+      {
+        question: "Is this a full technical SEO crawler?",
+        answer:
+          "No. The MVP focuses on public homepage and common file checks. It is meant to catch early SEO blockers quickly, not replace a full enterprise crawler.",
+      },
+      {
+        question: "Why does an AI-built website need an SEO checker?",
+        answer:
+          "AI tools can help generate code and layouts, but they do not always create search-ready metadata, crawl files, canonical tags, structured data, or useful buyer pages.",
+      },
+      {
+        question: "Does the audit check sitemap.xml and robots.txt?",
+        answer:
+          "Yes. The audit checks whether public robots.txt and sitemap.xml files are available, then includes them in the SEO readiness score.",
+      },
+      {
+        question: "Can this help if my site has no organic traffic yet?",
+        answer:
+          "Yes. It gives you a baseline for search readiness and shows which public signals to fix before investing in more content.",
+      },
+    ],
+    related: [
+      {
+        href: "/",
+        label: "Home",
+        text: "See the full AI Website Growth Checker overview.",
+      },
+      {
+        href: "/blog",
+        label: "Blog",
+        text: "Read practical growth notes for small websites and SaaS tools.",
+      },
+      {
+        href: "/ai-website-growth-checker",
+        label: "AI Website Growth Checker",
+        text: "Diagnose why an AI-built website may not be getting traffic.",
+      },
+      {
+        href: "/free-website-growth-audit",
+        label: "Free Website Growth Audit",
+        text: "Run a broader free audit across SEO, content, conversion, and acquisition.",
+      },
+    ],
+    finalCtaTitle: "Check your AI-built website's SEO basics",
+    finalCtaText:
+      "Run a free audit to see whether your homepage has the search signals, crawl files, and buyer pages needed for early organic growth.",
+  },
+  geoCheckerForAiWebsites: {
+    slug: "/geo-checker-for-ai-websites",
+    metaTitle: "GEO Checker for AI Websites",
+    metaDescription:
+      "Check whether your AI website is ready for AI search engines like ChatGPT, Perplexity, and Gemini with GEO signals, llms.txt, structured data, FAQ, docs, and comparison pages.",
+    eyebrow: "GEO checker for AI websites",
+    h1: "GEO Checker for AI Websites",
+    intro:
+      "Use this GEO checker to see whether your website gives AI search tools enough public context to understand, summarize, and recommend your product.",
+    searchIntent:
+      "You want to know whether ChatGPT, Perplexity, Gemini, and other AI search experiences can understand what your website does.",
+    checkIntro:
+      "This page focuses on AI-search readiness: the public files, answer-ready pages, and structured context that help AI systems interpret a small website.",
+    checks: [
+      "Whether your site has llms.txt to summarize the product, audience, important pages, and source context for AI tools.",
+      "Whether the homepage includes structured data that helps machines understand the organization, product, or FAQ content.",
+      "Whether visitors and AI systems can find FAQ, pricing, docs, comparison, and use-case pages from the homepage.",
+      "Whether your site provides concise answers and enough buyer context instead of relying only on a marketing headline.",
+    ],
+    audiences: [
+      "AI tool builders preparing for AI search discovery",
+      "micro SaaS founders who want to be understood by answer engines",
+      "indie hackers building comparison and FAQ pages for long-tail demand",
+      "small website owners who need clearer public context for their offer",
+    ],
+    whyTitle: "Why GEO matters for small AI and SaaS websites",
+    whyParagraphs: [
+      "Generative Engine Optimization is about making your website easier for AI answer systems to parse, cite, and compare. It does not replace SEO, but it adds a new layer of public context.",
+      "AI search tools often need direct answers, structured entities, documentation, pricing clarity, and comparison language. A thin homepage rarely gives enough evidence by itself.",
+      "For early-stage tools, GEO work is also useful for humans: FAQ pages, docs, pricing explanations, and comparison content help buyers understand whether the product fits their workflow.",
+    ],
+    auditChecks: [
+      {
+        title: "llms.txt readiness",
+        text: "Checks whether a public llms.txt file exists as a concise map for AI search and assistant tools.",
+      },
+      {
+        title: "Structured data",
+        text: "Looks for application/ld+json on the homepage so machines get explicit product or organization context.",
+      },
+      {
+        title: "Answer-ready pages",
+        text: "Reviews whether FAQ, docs, pricing, use cases, and comparison pages are discoverable from the homepage.",
+      },
+      {
+        title: "AI-search content gaps",
+        text: "Highlights missing pages that make it harder for AI systems to explain what your product does and who it serves.",
+      },
+    ],
+    steps: [
+      "Enter your website URL and choose the website type that best matches your product.",
+      "Read the GEO score and the GEO / AI Search check group in the report.",
+      "Add or improve llms.txt, structured data, FAQ, docs, pricing, and comparison pages.",
+      "Use the suggested pages to create answer-ready content that AI systems and buyers can understand.",
+    ],
+    faqs: [
+      {
+        question: "What is a GEO checker?",
+        answer:
+          "A GEO checker reviews whether your website has public signals that help generative search and AI answer tools understand your product, category, audience, and useful source pages.",
+      },
+      {
+        question: "Does this guarantee visibility in ChatGPT or Perplexity?",
+        answer:
+          "No. No lightweight checker can guarantee AI-search visibility. The audit helps you identify missing signals that make your site harder to understand or cite.",
+      },
+      {
+        question: "Why does llms.txt matter?",
+        answer:
+          "llms.txt can provide a concise, public guide to your product, important pages, and source context. It is not a ranking guarantee, but it is a practical AI-search readiness signal.",
+      },
+      {
+        question: "Is GEO different from SEO?",
+        answer:
+          "Yes, but they overlap. SEO focuses on search discovery and ranking signals, while GEO emphasizes answer-ready context, entities, structured data, and pages AI tools can interpret.",
+      },
+    ],
+    related: [
+      {
+        href: "/",
+        label: "Home",
+        text: "See how AI Website Growth Checker combines SEO, GEO, Reddit, content, and conversion checks.",
+      },
+      {
+        href: "/blog",
+        label: "Blog",
+        text: "Read growth notes for small online tools and AI-built websites.",
+      },
+      {
+        href: "/ai-website-growth-checker",
+        label: "AI Website Growth Checker",
+        text: "Use the broader checker for AI-built websites with no traffic.",
+      },
+      {
+        href: "/free-website-growth-audit",
+        label: "Free Website Growth Audit",
+        text: "Run a general free growth audit before building more pages.",
+      },
+    ],
+    finalCtaTitle: "Check whether your website is ready for AI search",
+    finalCtaText:
+      "Run a free audit to find missing GEO signals such as llms.txt, structured data, FAQ, docs, pricing, and comparison pages.",
+  },
 } satisfies Record<string, LandingPage>;
 
 export const growthToolLinks = Object.values(landingPages).map((page) => ({
